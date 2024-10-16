@@ -1,4 +1,6 @@
-# n과 m(2)
+# 10월 16일
+
+### n과 m(2)
 ```
 import sys
 input = sys.stdin.readline
@@ -21,7 +23,7 @@ def dfs(lst, last):
 dfs([], 0)
 ```
 
-# n과 m(4)
+### n과 m(4)
 ```
 import sys
 input = sys.stdin.readline
@@ -41,7 +43,7 @@ def dfs(lst, last):
 dfs([], 0)
 ```
 
-# n과 m(5)
+### n과 m(5)
 ```
 import sys
 
@@ -72,7 +74,7 @@ for i in lst:
         v[i] = 0
 ```
 
-# 헌내기는 친구가 필요해
+### 헌내기는 친구가 필요해
 ```
 from collections import deque
 n, m = map(int, input().split())
