@@ -38,7 +38,7 @@ q = deque()
 q.append(start)
 v[start] = 1
 
-# 잘보면 dfs랑 bfs 생긴게 비슷하다
+# 잘보면 dfs랑 bfs 생긴게 비슷하다?
 while q:
     num = q.popleft()
     print(num, end=' ')

@@ -1,181 +1,48 @@
-# 10월 18일
+# 10월 21일
 
-### 제목
+### 체스판 다시 칠하기
+로직으로는 일단 w, b를 체크해야하는데 8 * 8 배열이니까 바뀌는 횟수는 32회가 넘는다면 그 반대로 바꾸는게 더 효율적! 
+그래서일단 지금 주어진 상태로 체스판을 완성시키는데 필요한 횟수를 세고, 
+순회하면서 y축이 바뀔때는 그 색이 그대로 다시 j == 0일때 들어가야함
+그런 로직을 적용한 것
+
 ```
-```
+def dfs(a, b):
+    global ans
+    # 개수로 세려햇는데 걍 순회하면서 해야겟다
+    now = 0
+    cnt = 0
+    bwlst = ['W', 'B']
+    if arr[a][b] == 'W':
+        now = 0
+    else:
+        now = 1
+    for y in range(a, a+8):
+        for x in range(b, b+8):
+            if x == b:
+                now += 1
+            if bwlst[now % 2] == arr[y][x]:
+                now += 1
+                continue
+            now += 1
+            cnt += 1
 
-# 10월 17일
+    if cnt > 32:
+        cnt = 64 - cnt
+    ans = min(ans, cnt)
 
-### DFS와 BFS
-```
-import sys
-from collections import deque
-input = sys.stdin.readline
+n, m = map(int, input().split()) # n 세로길이 m 가로길이
 
-n, m, start = map(int, input().split())
+arr = [list(input()) for _ in range(n)]
 
-lst = [[] for _ in range(n + 1)]
-v = [0 for _ in range(n + 1)]
-
-# 양방향으로 방문 가능하니까 둘다 추가
-for _ in range(m):
-    a, b = map(int, input().split())
-    lst[a].append(b)
-    lst[b].append(a)
-
-# 리스트의 정렬이 필요함 낮은거를 우선으로 방문해서
-for i in lst:
-    i.sort()
-
-
-def dfs(num):
-    print(num, end=' ')
-    for i in lst[num]:
-        if not v[i]:
-            v[i] = 1
-            dfs(i)
-            
-# 재귀로 해결하기 넣기 전에 방문 처리 해주고 dfs 시작
-v[start] = 1
-dfs(start)
-print()
+ans = float('inf')
+for i in range(n-7):
+    for j in range(m-7):
+        if i == 0 and j == 5:
+            asdf = 1
+        dfs(i, j)
 
 
-#여기서부터는 bfs시작
-
-v = [0 for _ in range(n + 1)]
-q = deque()
-q.append(start)
-v[start] = 1
-
-# 잘보면 dfs랑 bfs 생긴게 비슷하다?
-while q:
-    num = q.popleft()
-    print(num, end=' ')
-    for j in lst[num]:
-        if not v[j]:
-            v[j]=1
-            q.append(j)
-            
-print()
+print(ans)
 ```
 
-# 10월 16일
-
-### n과 m(2)
-```
-import sys
-input = sys.stdin.readline
-
-n, m = map(int, input().split())
-v = [0 for _ in range(n+1)]
-
-def dfs(lst, last):
-    if len(lst) == m:
-        print(*lst)
-        return
-
-    for i in range(1, n+1):
-        if not v[i] and i > last:
-            v[i] = 1
-            lst.append(i)
-            dfs(lst, i)
-            lst.pop()
-            v[i] = 0
-dfs([], 0)
-```
-
-### n과 m(4)
-```
-import sys
-input = sys.stdin.readline
-
-n, m = map(int, input().split())
-
-def dfs(lst, last):
-    if len(lst) == m:
-        print(*lst)
-        return
-
-    for i in range(1, n+1):
-        if i >= last:
-            lst.append(i)
-            dfs(lst, i)
-            lst.pop()
-dfs([], 0)
-```
-
-### n과 m(5)
-```
-import sys
-
-def dfs(tlst):
-    if len(tlst) == m:
-        print(*tlst)
-        return
-
-    for i in lst:
-        if not v[i]:
-            v[i] = 1
-            tlst.append(i)
-            dfs(tlst)
-            tlst.pop()
-            v[i] = 0
-
-
-input = sys.stdin.readline
-n, m = map(int, input().split())
-lst = list(map(int, input().split()))
-lst.sort()
-v = [0] * (max(lst) + 1)
-
-for i in lst:
-    if not v[i]:
-        v[i] = 1
-        dfs([i])
-        v[i] = 0
-```
-
-### 헌내기는 친구가 필요해
-```
-from collections import deque
-n, m = map(int, input().split())
-arr = [list(input().strip()) for _ in range(n)]
-
-#n은 세로 m은 가로
-
-doyeon = ()
-p = []
-v = [[0] * m for _ in range(n)]
-for i in range(n):
-    for j in range(m):
-        if arr[i][j] == 'I':
-            doyeon = (i, j)
-        elif arr[i][j] == 'P':
-            p.append((i, j))
-
-di = [(0, 1), (-1, 0), (0, -1), (1, 0)]
-
-ans = 0
-q = deque([doyeon])
-
-v[doyeon[0]][doyeon[1]] = 1
-while q:
-    y, x = q.popleft()
-    if arr[y][x] == 'P':
-        ans += 1
-    kand = v
-    for d in di:
-        dy = y + d[0]
-        dx = x + d[1]
-        if not (0<=dy<n and 0<=dx<m):
-            continue
-        if not v[dy][dx] and not arr[dy][dx] == 'X':
-            v[dy][dx] = 1
-            q.append((dy, dx))
-
-if not ans:
-    print('TT')
-else:
-    print(ans)
-```
